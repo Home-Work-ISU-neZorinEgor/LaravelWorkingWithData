@@ -13,6 +13,7 @@
         <div class="right-side">
             <a href="/todos">Добавить задачу</a>
             <a href="/view-todos">Список задач</a>
+            <a href="/users">Список назначителей</a>
         </div>
     </div>
 </header>

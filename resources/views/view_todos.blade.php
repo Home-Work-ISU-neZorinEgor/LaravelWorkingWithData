@@ -14,11 +14,14 @@
             <div class="task">
                 <h2>{{ $todo->title }}</h2>
                 <p>{{ $todo->description }}</p>
+                
                 <form method="POST" action="{{ route('todos.soft-delete', $todo->id) }}">
                     @csrf
                     @method('DELETE')
                     <button class="button1" type="submit">Удалить (мягкое)</button>
                 </form>
+
+                <a href="{{ route('todos.edit', $todo->id) }}" class="button2">Редактировать</a>
             </div>
         @endforeach
     @else

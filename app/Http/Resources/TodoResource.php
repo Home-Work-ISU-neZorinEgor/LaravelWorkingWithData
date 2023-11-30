@@ -11,7 +11,7 @@ class TodoResource extends JsonResource
             'id' => $this->id,
             'title' => $this->title,
             'description' => $this->description,
-            'delete_url' => route('todos.soft-delete', $this->id), // Добавление URL для мягкого удаления
+            'delete_url' => route('todos.soft-delete', $this->id), 
         ];
     }
 }

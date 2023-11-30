@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\TodoResource; 
+
 use App\Models\Todo;
+use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
 
 
 class TodoController extends Controller
@@ -20,26 +20,40 @@ class TodoController extends Controller
     }
 
     public function create()
-    {
-        return view('todos.create');
+{
+    $users = User::all();
+    return view('todos.create', compact('users'));
+}
+
+// В методе store, сохраните связанных пользователей
+public function store(Request $request)
+{
+    $request->validate([
+        'title' => 'required',
+        'description' => 'required',
+    ]);
+
+    $todo = Todo::create([
+        'title' => $request->title,
+        'description' => $request->description,
+    ]);
+
+    // Привязываем выбранных пользователей к задаче
+    if ($request->has('assignees')) {
+        $todo->assignees()->attach($request->assignees);
     }
 
-    public function store(Request $request)
-    {
-        $request->validate([
-            'title' => 'required',
-            'description' => 'required',
-        ]);
+        return redirect('view-todos')->with('success', 'Задача успешно создана!');
 
-        Todo::create($request->all());
+}
 
-        return redirect('/todos')->with('success', 'Задача успешно созданна!');
-    }
-
-    public function edit(Todo $todo)
-    {
-        return view('todos.edit', compact('todo'));
-    }
+// В методе edit, передайте список пользователей в представление
+public function edit(Todo $todo)
+{
+    $users = User::all();
+    return view('edit', compact('todo', 'users'));
+}
+    
 
     public function update(Request $request, Todo $todo)
     {
@@ -47,11 +61,12 @@ class TodoController extends Controller
             'title' => 'required',
             'description' => 'required',
         ]);
-
+    
         $todo->update($request->all());
-
-        return redirect('/todos')->with('success', 'Задача успешно обнавленна!');
+    
+        return redirect('view-todos')->with('success', 'Задача успешно обновленна!');
     }
+    
 
     public function viewTodosList()
 {
@@ -80,9 +95,11 @@ class TodoController extends Controller
         // $softDeletedTodos = Todo::onlyTrashed()->get();
 
 
-        return redirect('/todos')->with('success', 'Задача успешно удалена (мягкое удаление)!');
+        return redirect('/view-todos')->with('success', 'Задача успешно удалена (мягкое удаление)!');
         
     }
+
+    
     
 
 }
