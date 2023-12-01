@@ -6,7 +6,7 @@ use App\Http\Controllers\UserController;
 
 Route::get('/', [TodoController::class, 'index']);
 Route::get('/todos', [TodoController::class, 'viewTodos']);
-Route::post('/todos', [TodoController::class, 'store'])->name('todos.store'); // Добавлено имя маршрута
+Route::post('/todos', [TodoController::class, 'store'])->name('todos.store'); 
 Route::get('/view-todos', [TodoController::class, 'viewTodosList']);
 Route::delete('todos/{todo}/soft-delete', [TodoController::class, 'softDelete'])->name('todos.soft-delete');
 Route::get('/todos/{todo}/edit', [TodoController::class, 'edit'])->name('todos.edit');

@@ -12,7 +12,12 @@ class Todo extends Model
     
     protected $dates = ['deleted_at'];
 
-    protected $fillable = ['title', 'description'];
+    protected $fillable = ['title', 'description', 'user_id'];
+
+    public function users()
+    {
+        return User::all();
+    }
 
     public function user()
     {

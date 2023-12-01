@@ -20,7 +20,8 @@ class UserController extends Controller
 
     public function create()
     {
-        return view('users.create');
+        $assignees = User::all();
+        return view('todos.create', compact('assignees'));
     }
     public function store(Request $request)
     {

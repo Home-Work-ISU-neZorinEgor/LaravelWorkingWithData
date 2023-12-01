@@ -2,58 +2,49 @@
 
 namespace App\Http\Controllers;
 
-
 use App\Models\Todo;
 use App\Models\User;
 use Illuminate\Http\Request;
 
 
 class TodoController extends Controller
-{ public function index()
+{
+     public function index()
     {
         return view('welcome');
     }
     
     public function show(Todo $todo)
     {
-        return response()->json(['todo' => new TodoResource($todo)], 200);
+        return view('todos', compact('todo'));
     }
 
     public function create()
-{
-    $users = User::all();
-    return view('todos.create', compact('users'));
-}
-
-// В методе store, сохраните связанных пользователей
-public function store(Request $request)
-{
-    $request->validate([
-        'title' => 'required',
-        'description' => 'required',
-    ]);
-
-    $todo = Todo::create([
-        'title' => $request->title,
-        'description' => $request->description,
-    ]);
-
-    // Привязываем выбранных пользователей к задаче
-    if ($request->has('assignees')) {
-        $todo->assignees()->attach($request->assignees);
+    {
+        $users = User::all();
+        return view('todos', compact('users')); 
     }
 
-        return redirect('view-todos')->with('success', 'Задача успешно создана!');
+    public function store(Request $request)
+    {
+        $request->validate([
+            'title' => 'required',
+            'description' => 'required',
+            'user_id' => 'required|array',
+        ]);
 
-}
+        $todo = Todo::create($request->all());
+        $todo->users()->attach($request->input('user_id'));
 
-// В методе edit, передайте список пользователей в представление
-public function edit(Todo $todo)
-{
-    $users = User::all();
-    return view('edit', compact('todo', 'users'));
-}
-    
+        return redirect()->route('todos.index')
+            ->with('success', 'Задача успешно создана');
+    }
+
+    public function edit(Todo $todo)
+    {
+        $users = User::all();
+        return view('edit', compact('todo', 'users'));
+    }
 
     public function update(Request $request, Todo $todo)
     {
@@ -91,12 +82,14 @@ public function edit(Todo $todo)
 
     public function softDelete(Todo $todo)
     {
+
         $todo->delete();
-        // $softDeletedTodos = Todo::onlyTrashed()->get();
+
 
 
         return redirect('/view-todos')->with('success', 'Задача успешно удалена (мягкое удаление)!');
-        
+    
+    
     }
 
     

@@ -15,7 +15,7 @@ class User extends Model
 {
     use SoftDeletes;
 
-    protected $fillable = ['name', 'email', 'password',];
+    protected $fillable = ['name', 'email', 'password', 'avatar'];
     public function todos()
     {
         return $this->hasMany(Todo::class);
